@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="blackbird.com.screenapplication"
-   >
-  <!--  android:sharedUserId="android.uid.system"-->
-    <!--电源管理权限-->
+    package="blackbird.com.screenapplication">
+
+    <!-- android:sharedUserId="android.uid.system" -->
+    <!-- 电源管理权限 -->
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DEVICE_POWER" />
-    <uses-permission android:name="android.permission.REBOOT"/>
+    <uses-permission android:name="android.permission.REBOOT" />
 
     <application
         android:allowBackup="true"
@@ -24,20 +24,28 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".Receiver.ScreenReciver">
+        <receiver android:name=".receiver.ScreenReciver"></receiver>
 
-        </receiver>
-
-        <receiver android:name=".Receiver.AdminReciver"
+      <!--  设备管理器权限，注册权限监听器-->
+        <receiver
+            android:name=".receiver.AdminReciver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
-                android:resource="@xml/powermanager" />
+                android:resource="@xml/adminmanager" />
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".service.AppService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="90000">
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

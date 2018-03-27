@@ -5,18 +5,17 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import java.lang.reflect.Method;
 
-import blackbird.com.screenapplication.Receiver.AdminReciver;
-import blackbird.com.screenapplication.Receiver.ScreenReciver;
+import blackbird.com.screenapplication.receiver.AdminReciver;
 import blackbird.com.screenapplication.application.AppApplication;
+import blackbird.com.screenapplication.utils.AndroidRootUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     int requestCode = 1;
@@ -29,34 +28,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         this.findViewById(R.id.off).setOnClickListener(this);
         this.findViewById(R.id.reboot).setOnClickListener(this);
-
-        RegisterScreenReciver();
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.off) {
-            ScreenLock();
+            lockScreen();
         } else if (id == R.id.reboot) {
-           // reboot();
+            // reboot();
+        }
+        boolean root = AndroidRootUtils.checkDeviceRoot();
+        if(root){
+            AndroidRootUtils.execRootCmd("input keyevent 26");
         }
 
+
+    }
+    PowerManager powerManager;
+    PowerManager.WakeLock wakeLock;
+    public void openScreenOn() {
+        if (powerManager == null) {
+            powerManager = (PowerManager) AppApplication.getApplicationContexts().getSystemService(Context.POWER_SERVICE);
+        }
+        if (wakeLock == null) {
+            wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "TAG");
+        }
+        boolean ifOpen = powerManager.isScreenOn();
+        if (!ifOpen) {
+            //屏幕会持续点亮
+            wakeLock.acquire();
+            //释放锁，屏幕熄灭。
+            wakeLock.release();
+        }
     }
 
-
-    private void ScreenLock() {
+    /**
+     * 息屏操作
+     */
+    private void lockScreen() {
         adminReceiver = new ComponentName(this, AdminReciver.class);
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        if (!mDevicePolicyManager.isAdminActive(adminReceiver)) {
+        boolean active = mDevicePolicyManager.isAdminActive(adminReceiver);
+        if (!active) {
+            //打开DevicePolicyManager管理器，授权页面
             Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiver);
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "设备管理涉及的管理权限,下面是清单,一次性激活!");
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "DevicePolicyManager涉及的管理权限,一次性激活!");
             startActivityForResult(intent, requestCode);
         } else {
+            //锁屏
             mDevicePolicyManager.lockNow();
-            long locknow = System.currentTimeMillis();
-            Log.e("TAG", "locknow---syscurrenttime>>>" + locknow);
             try {
                 Thread.sleep(5000L);
                 Log.e("TAG", " 延迟5s后亮屏");
@@ -64,7 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
             Log.e("TAG", "wake and unlock");
-            wakeAndUnlock(true);
+            // wakeAndUnlock(true);
+            wakeUpAndUnlock();
         }
     }
 
@@ -163,13 +186,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent2.putExtra("interval", 1);
         intent2.putExtra("window", 0);
         sendBroadcast(intent2);
-    }
-
-    private void RegisterScreenReciver() {
-        IntentFilter screenStatus = new IntentFilter();
-        screenStatus.addAction(Intent.ACTION_SCREEN_ON);
-        screenStatus.addAction(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(new ScreenReciver(), screenStatus);
     }
 
     @Override

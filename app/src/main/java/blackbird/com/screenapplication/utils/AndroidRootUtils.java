@@ -11,7 +11,6 @@ import java.io.IOException;
  */
 
 public class AndroidRootUtils {
-
     /**
      *
      * 判断机器Android是否已经root，即是否获取root权限
@@ -20,11 +19,11 @@ public class AndroidRootUtils {
         boolean resualt = false;
             int ret = execRootCmdSilent("echo test"); // 通过执行测试命令来检测
             if (ret != -1) {
-                Log.i("haveRoot", "have root!");
+                Log.i("checkDeviceRoot", "this Device have root!");
                 resualt = true;
             } else {
                 resualt = false;
-                Log.i("haveRoot", "not root!");
+                Log.i("checkDeviceRoot", "this Device not root!");
             }
         return resualt;
     }
@@ -36,7 +35,6 @@ public class AndroidRootUtils {
         String result = "";
         DataOutputStream dos = null;
         DataInputStream dis = null;
-
         try {
             Process p = Runtime.getRuntime().exec("su");// 经过Root处理的android系统即有su命令
             dos = new DataOutputStream(p.getOutputStream());
@@ -47,7 +45,6 @@ public class AndroidRootUtils {
             dos.flush();
             String line = null;
             while ((line = dis.readLine()) != null) {
-                Log.d("result", line);
                 result += line;
             }
             p.waitFor();
@@ -81,8 +78,6 @@ public class AndroidRootUtils {
         try {
             Process p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-
-            Log.i("execRootCmdSilent", cmd);
             dos.writeBytes(cmd + "\n");
             dos.flush();
             dos.writeBytes("exit\n");
