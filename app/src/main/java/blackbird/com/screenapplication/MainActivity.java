@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
     PowerManager powerManager;
     PowerManager.WakeLock wakeLock;
     public void openScreenOn() {

@@ -24,15 +24,16 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".receiver.ScreenReciver"></receiver>
+        <receiver android:name=".receiver.ScreenReciver" />
 
-      <!--  设备管理器权限，注册权限监听器-->
+        <!-- 设备管理器权限，注册权限监听器 -->
         <receiver
             android:name=".receiver.AdminReciver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/adminmanager" />
+
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
@@ -46,6 +47,8 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </service>
+
+        <activity android:name=".DevicePolicyManagerActivity"></activity>
     </application>
 
 </manifest>
