@@ -11,10 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import blackbird.com.screenapplication.receiver.AdminReciver;
 import blackbird.com.screenapplication.application.AppApplication;
+import blackbird.com.screenapplication.receiver.AdminReciver;
 import blackbird.com.screenapplication.utils.AndroidRootUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -28,6 +31,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         this.findViewById(R.id.off).setOnClickListener(this);
         this.findViewById(R.id.reboot).setOnClickListener(this);
+
+        getApplicationContext().
+    }
+    /**
+     * 保存对象
+     *
+     * @param ser  Serializable序列化后数据
+     * @param file File Name
+     * @throws IOException Exception
+     */
+    public void saveObject(final Serializable ser, final String file) {
+                FileOutputStream fos = null;
+                ObjectOutputStream oos = null;
+                try {
+                    fos = openFileOutput(file, MODE_PRIVATE);
+                    oos = new ObjectOutputStream(fos);
+                    oos.writeObject(ser);
+                    oos.flush();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        oos.close();
+                    } catch (Exception e) {
+                    }
+                    try {
+                        fos.close();
+                    } catch (Exception e) {
+                    }
+                }
     }
 
     @Override
