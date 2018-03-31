@@ -11,9 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import blackbird.com.screenapplication.application.AppApplication;
@@ -31,37 +29,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         this.findViewById(R.id.off).setOnClickListener(this);
         this.findViewById(R.id.reboot).setOnClickListener(this);
+        Class<?> policyManager =DevicePolicyManager.class;
+        // Class<?> policyManager = Class.forName("DevicePolicyManager");
+        Field[] declaredFields = policyManager.getDeclaredFields();
+        Log.e("TAG", "onCreate:----------- declaredFields:" + declaredFields.length);
+        Method[] declaredMethods = policyManager.getDeclaredMethods();
+        Log.e("TAG", "onCreate:-----------   declaredMethods: " + declaredMethods.length);
 
-        getApplicationContext().
+        //  getApplicationContext().
     }
-    /**
-     * 保存对象
-     *
-     * @param ser  Serializable序列化后数据
-     * @param file File Name
-     * @throws IOException Exception
-     */
-    public void saveObject(final Serializable ser, final String file) {
-                FileOutputStream fos = null;
-                ObjectOutputStream oos = null;
-                try {
-                    fos = openFileOutput(file, MODE_PRIVATE);
-                    oos = new ObjectOutputStream(fos);
-                    oos.writeObject(ser);
-                    oos.flush();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        oos.close();
-                    } catch (Exception e) {
-                    }
-                    try {
-                        fos.close();
-                    } catch (Exception e) {
-                    }
-                }
-    }
+
+
+
 
     @Override
     public void onClick(View v) {
@@ -70,9 +49,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lockScreen();
         } else if (id == R.id.reboot) {
             // reboot();
+            Intent intent = new Intent(this, DevicePolicyManagerActivity.class);
+            startActivity(intent);
         }
         boolean root = AndroidRootUtils.checkDeviceRoot();
-        if(root){
+        if (root) {
             AndroidRootUtils.execRootCmd("input keyevent 26");
         }
 
@@ -81,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     PowerManager powerManager;
     PowerManager.WakeLock wakeLock;
+
     public void openScreenOn() {
         if (powerManager == null) {
             powerManager = (PowerManager) AppApplication.getApplicationContexts().getSystemService(Context.POWER_SERVICE);

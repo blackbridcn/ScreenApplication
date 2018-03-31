@@ -48,7 +48,9 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".DevicePolicyManagerActivity"></activity>
+        <activity
+            android:name=".DevicePolicyManagerActivity"
+            android:theme="@android:style/Theme.Wallpaper.NoTitleBar" />
     </application>
 
 </manifest>
