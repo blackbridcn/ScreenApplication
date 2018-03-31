@@ -29,6 +29,10 @@ public class DevicePolicyManagerActivity extends AppCompatActivity implements Vi
         this.findViewById(R.id.btn_swipe_admin).setOnClickListener(this);
         adminReceiver = new ComponentName(this, AdminReciver.class);
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+          //  new  DeviceAdminInfo();
+            //Lollipop DevicePolicyManager学习（上）
+            //https://blog.csdn.net/guiyu_1985/article/details/42778655
+
         lockScreen();
     }
 
