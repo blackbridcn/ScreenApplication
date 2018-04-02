@@ -29,10 +29,13 @@ public class DevicePolicyManagerActivity extends AppCompatActivity implements Vi
         this.findViewById(R.id.btn_swipe_admin).setOnClickListener(this);
         adminReceiver = new ComponentName(this, AdminReciver.class);
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-          //  new  DeviceAdminInfo();
+          // new DeviceAdminInfo();
             //Lollipop DevicePolicyManager学习（上）
             //https://blog.csdn.net/guiyu_1985/article/details/42778655
 
+
+            //Android屏幕锁定详解（一）
+        //http://blog.51cto.com/mzh3344258/748998
         lockScreen();
     }
 
@@ -144,6 +147,10 @@ public class DevicePolicyManagerActivity extends AppCompatActivity implements Vi
         }*/
     }
 
+    /**
+     * 查看是否已经获得管理者的权限
+     * @return resualt
+     */
     private boolean checkAdmin() {
         return mDevicePolicyManager.isAdminActive(adminReceiver);
     }
