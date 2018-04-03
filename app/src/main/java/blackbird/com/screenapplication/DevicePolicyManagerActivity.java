@@ -119,7 +119,7 @@ public class DevicePolicyManagerActivity extends AppCompatActivity implements Vi
     }
     private void swipData(){
         if (checkAdmin()) {
-           // mDevicePolicyManager.wipeData( 0);
+            mDevicePolicyManager.wipeData( 0);
             Toast.makeText(this, "恢复出厂设置", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "未授权给用户系统管理权限", Toast.LENGTH_SHORT).show();

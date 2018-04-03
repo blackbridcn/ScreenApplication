@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             AndroidRootUtils.execRootCmd("input keyevent 26");
         }
 
-
     }
 
     PowerManager powerManager;
@@ -207,7 +206,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (1 == requestCode) {
-
             String dataString = data.getDataString();
             Log.e("TAG", "onActivityResult:===================  Intent :"+dataString );
             super.onActivityResult(requestCode, resultCode, data);
