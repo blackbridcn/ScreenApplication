@@ -8,62 +8,75 @@
     tools:context="blackbird.com.screenapplication.DevicePolicyManagerActivity">
 
     <Button
+        android:id="@+id/btn_request"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="锁屏"
-        android:id="@+id/btn_lockscrrem"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-                <Button
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="修改密码为9527"
-                    android:id="@+id/btn_set_pasword"/>
-
-                <Button
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="清楚屏锁密码"
-                    android:id="@+id/btn_swipe_pasword"/>
-        </LinearLayout>
-
+        android:textAllCaps="false"
+        android:text="申请设备管理权限(除WIPE_DATA之外)" />
     <Button
+        android:id="@+id/btn_request_wipedata"
+        android:layout_width="match_parent"
+        android:textAllCaps="false"
+        android:layout_height="wrap_content"
+        android:text="申请Wipe_data设备管理权限" />
+    <Button
+        android:id="@+id/btn_lockscrrem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="设置锁屏时间（3s）"
-        android:id="@+id/btn_set_time"/>
+        android:text="锁屏" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center_vertical">
+        android:orientation="horizontal">
 
         <Button
-            android:layout_weight="1"
+            android:id="@+id/btn_set_pasword"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="恢复出厂设置"
-            android:id="@+id/btn_wipe_data"/>
+            android:layout_weight="1"
+            android:text="修改密码为9527" />
 
         <Button
-            android:layout_weight="1"
+            android:id="@+id/btn_swipe_pasword"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="清除锁屏时间"
-            android:id="@+id/btn_wisp_lock_time"/>
-       </LinearLayout>
+            android:layout_weight="1"
+            android:text="清楚屏锁密码" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_set_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="设置锁屏时间（3s）" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_wipe_data"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="恢复出厂设置" />
+
+        <Button
+            android:id="@+id/btn_wisp_lock_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="清除锁屏时间" />
+    </LinearLayout>
 
 
     <Button
+        android:id="@+id/btn_swipe_admin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="撤销设备管理器权限"
-        android:id="@+id/btn_swipe_admin"/>
+        android:text="撤销设备管理器权限" />
 
 </LinearLayout>

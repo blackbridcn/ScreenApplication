@@ -39,6 +39,18 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".receiver.WipeDataAdminReciver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/wipedata_adminmanager" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".service.AppService"
             android:enabled="true"
@@ -50,7 +62,9 @@
 
         <activity
             android:name=".DevicePolicyManagerActivity"
-            android:theme="@android:style/Theme.Wallpaper.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent" />
+        <!-- android:theme="@android:style/Theme.Translucent.NoTitleBar"-->
+        <!--   android:theme="@android:style/Theme.Wallpaper.NoTitleBar"-->
     </application>
 
 </manifest>

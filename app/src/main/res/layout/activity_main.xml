@@ -6,7 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="blackbird.com.screenapplication.MainActivity">
-
+    <Button
+        android:id="@+id/DevicePolicyManager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="DevicePolicyManager" />
     <Button
         android:id="@+id/off"
         android:layout_width="match_parent"

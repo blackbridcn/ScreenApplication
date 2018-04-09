@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
 
 import blackbird.com.screenapplication.application.AppApplication;
 import blackbird.com.screenapplication.receiver.AdminReciver;
-import blackbird.com.screenapplication.utils.AndroidRootUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     int requestCode = 1;
@@ -29,17 +28,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         this.findViewById(R.id.off).setOnClickListener(this);
         this.findViewById(R.id.reboot).setOnClickListener(this);
-        Class<?> policyManager =DevicePolicyManager.class;
-        // Class<?> policyManager = Class.forName("DevicePolicyManager");
+        this.findViewById(R.id.DevicePolicyManager).setOnClickListener(this);
+
+        Class<?> policyManager = DevicePolicyManager.class;
         Field[] declaredFields = policyManager.getDeclaredFields();
         Log.e("TAG", "onCreate:----------- declaredFields:" + declaredFields.length);
         Method[] declaredMethods = policyManager.getDeclaredMethods();
         Log.e("TAG", "onCreate:-----------   declaredMethods: " + declaredMethods.length);
 
-        //  getApplicationContext().
     }
 
-
+    private void reflection() {
+        //1 .
+        Class<?> clazz = MangerData.class;
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+        }
+    }
 
 
     @Override
@@ -49,13 +55,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lockScreen();
         } else if (id == R.id.reboot) {
             // reboot();
+
+        }else if(id ==R.id.DevicePolicyManager){
             Intent intent = new Intent(this, DevicePolicyManagerActivity.class);
             startActivity(intent);
         }
-        boolean root = AndroidRootUtils.checkDeviceRoot();
+       /* boolean root = AndroidRootUtils.checkDeviceRoot();
         if (root) {
             AndroidRootUtils.execRootCmd("input keyevent 26");
-        }
+        }*/
 
     }
 
@@ -207,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (1 == requestCode) {
             String dataString = data.getDataString();
-            Log.e("TAG", "onActivityResult:===================  Intent :"+dataString );
+            Log.e("TAG", "onActivityResult:===================  Intent :" + dataString);
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
