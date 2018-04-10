@@ -17,9 +17,7 @@ public class AppApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
-        Intent intent = new Intent();
-        intent.setClass(this, AppService.class);
-        startService(intent);
+
     }
 
     public static Context getApplicationContexts() {

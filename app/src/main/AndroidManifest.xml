@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@android:style/Theme.Wallpaper.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,6 +41,7 @@
             </intent-filter>
         </receiver>
 
+        <!--设备管理器权限 恢复出厂设置权限-->
         <receiver
             android:name=".receiver.WipeDataAdminReciver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -62,9 +65,10 @@
 
         <activity
             android:name=".DevicePolicyManagerActivity"
-            android:theme="@android:style/Theme.Translucent" />
-        <!-- android:theme="@android:style/Theme.Translucent.NoTitleBar"-->
-        <!--   android:theme="@android:style/Theme.Wallpaper.NoTitleBar"-->
+            android:theme="@android:style/Theme.Wallpaper.NoTitleBar" />
+        <activity
+            android:name=".AdbScreenActivity"
+            android:theme="@android:style/Theme.Wallpaper.NoTitleBar" />
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package blackbird.com.screenapplication;
 
+import android.app.Activity;
 import android.app.KeyguardManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -16,54 +17,35 @@ import java.lang.reflect.Method;
 
 import blackbird.com.screenapplication.application.AppApplication;
 import blackbird.com.screenapplication.receiver.AdminReciver;
+import blackbird.com.screenapplication.service.AppService;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    int requestCode = 1;
-    ComponentName adminReceiver;
-    DevicePolicyManager mDevicePolicyManager;
+public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.findViewById(R.id.off).setOnClickListener(this);
-        this.findViewById(R.id.reboot).setOnClickListener(this);
+
+        this.findViewById(R.id.adb_cmd).setOnClickListener(this);
         this.findViewById(R.id.DevicePolicyManager).setOnClickListener(this);
+        Intent intent = new Intent();
+        intent.setClass(this, AppService.class);
+        startService(intent);
 
-        Class<?> policyManager = DevicePolicyManager.class;
-        Field[] declaredFields = policyManager.getDeclaredFields();
-        Log.e("TAG", "onCreate:----------- declaredFields:" + declaredFields.length);
-        Method[] declaredMethods = policyManager.getDeclaredMethods();
-        Log.e("TAG", "onCreate:-----------   declaredMethods: " + declaredMethods.length);
-
+        //openScreenOn();
     }
-
-    private void reflection() {
-        //1 .
-        Class<?> clazz = MangerData.class;
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-        }
-    }
-
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.off) {
-            lockScreen();
-        } else if (id == R.id.reboot) {
-            // reboot();
+        if (id == R.id.adb_cmd) {
+            Intent intent = new Intent(this, AdbScreenActivity.class);
+            startActivity(intent);
 
-        }else if(id ==R.id.DevicePolicyManager){
+        } else if (id == R.id.DevicePolicyManager) {
             Intent intent = new Intent(this, DevicePolicyManagerActivity.class);
             startActivity(intent);
         }
-       /* boolean root = AndroidRootUtils.checkDeviceRoot();
-        if (root) {
-            AndroidRootUtils.execRootCmd("input keyevent 26");
-        }*/
 
     }
 
@@ -86,33 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /**
-     * 息屏操作
-     */
-    private void lockScreen() {
-        adminReceiver = new ComponentName(this, AdminReciver.class);
-        mDevicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        boolean active = mDevicePolicyManager.isAdminActive(adminReceiver);
-        if (!active) {
-            //打开DevicePolicyManager管理器，授权页面
-            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiver);
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "DevicePolicyManager涉及的管理权限,一次性激活!");
-            startActivityForResult(intent, requestCode);
-        } else {
-            //锁屏
-            mDevicePolicyManager.lockNow();
-            try {
-                Thread.sleep(5000L);
-                Log.e("TAG", " 延迟5s后亮屏");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Log.e("TAG", "wake and unlock");
-            // wakeAndUnlock(true);
-            wakeUpAndUnlock();
-        }
-    }
 
     PowerManager pm;
     PowerManager.WakeLock wl;
@@ -180,42 +135,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         keyguardLock.disableKeyguard(); // 解锁
     }
 
-    private void reboot() {
-        PowerManager pManager = (PowerManager) getSystemService(Context.POWER_SERVICE);  //重新启动到fastboot模式
-        pManager.reboot("recovery");
-        try {
-            //获得ServiceManager类
-            Class<?> ServiceManager = Class.forName("android.os.ServiceManager");
-            //获得ServiceManager的getService方法
-            Method getService = ServiceManager.getMethod("getService", java.lang.String.class);
-            //调用getService获取RemoteService
-            Object oRemoteService = getService.invoke(null, Context.POWER_SERVICE);
-            //获得IPowerManager.Stub类
-            Class<?> cStub = Class.forName("android.os.IPowerManager$Stub");
-            //获得asInterface方法
-            Method asInterface = cStub.getMethod("asInterface", android.os.IBinder.class);
-            //调用asInterface方法获取IPowerManager对象
-            Object oIPowerManager = asInterface.invoke(null, oRemoteService);
-            //获得shutdown()方法
-            Method shutdown = oIPowerManager.getClass().getMethod("shutdown", boolean.class, boolean.class);
-            //调用shutdown()方法
-            shutdown.invoke(oIPowerManager, false, true);
-        } catch (Exception e) {
-            Log.e("TAG", "reboot: --------------------- Exception : " + e.toString());
-        }
-
-        Intent intent2 = new Intent(Intent.ACTION_REBOOT);
-        intent2.putExtra("nowait", 1);
-        intent2.putExtra("interval", 1);
-        intent2.putExtra("window", 0);
-        sendBroadcast(intent2);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (1 == requestCode) {
-            String dataString = data.getDataString();
-            Log.e("TAG", "onActivityResult:===================  Intent :" + dataString);
+        if (1 == requestCode) {;
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

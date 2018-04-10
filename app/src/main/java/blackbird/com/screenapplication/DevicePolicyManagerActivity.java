@@ -1,5 +1,6 @@
 package blackbird.com.screenapplication;
 
+import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -16,7 +17,7 @@ import java.util.List;
 import blackbird.com.screenapplication.receiver.AdminReciver;
 import blackbird.com.screenapplication.receiver.WipeDataAdminReciver;
 
-public class DevicePolicyManagerActivity extends AppCompatActivity implements View.OnClickListener {
+public class DevicePolicyManagerActivity extends Activity implements View.OnClickListener {
 
     private DevicePolicyManager mDevicePolicyManager;
     private ComponentName adminReceiver, wipeDataAdminReceiver;
@@ -24,11 +25,6 @@ public class DevicePolicyManagerActivity extends AppCompatActivity implements Vi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       /* Window window=getWindow();
-        WindowManager.LayoutParams wl = window.getAttributes();
-        wl.flags=WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
-        wl.alpha=0.0f;//这句就是设置窗口里控件的透明度的．０.０全透明．１.０不透明．
-        window.setAttributes(wl);*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_policy_manager);
         this.findViewById(R.id.btn_lockscrrem).setOnClickListener(this);
@@ -86,6 +82,7 @@ public class DevicePolicyManagerActivity extends AppCompatActivity implements Vi
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void isDeviceOwnerApp(String packageName) {
         boolean deviceOwnerApp = mDevicePolicyManager.isDeviceOwnerApp(packageName);
+        Log.e("TAG", "isDeviceOwnerApp: "+ deviceOwnerApp);
     }
 
     private void getCameraDisabled() {
@@ -110,11 +107,14 @@ public class DevicePolicyManagerActivity extends AppCompatActivity implements Vi
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_lockscrrem:
-                lockNow();
+               // lockNow();
+                //"com.tencent.mm"
+                isDeviceOwnerApp("blackbird.com.screenapplication");
                 break;
             case R.id.btn_set_pasword:
                 resetPassword();
@@ -234,8 +234,6 @@ public class DevicePolicyManagerActivity extends AppCompatActivity implements Vi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (1 == requestCode) {
-            String dataString = data.getDataString();
-            Log.e("TAG", "onActivityResult:===================  Intent :" + dataString);
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

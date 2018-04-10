@@ -13,13 +13,8 @@
         android:textAllCaps="false"
         android:text="DevicePolicyManager" />
     <Button
-        android:id="@+id/off"
+        android:id="@+id/adb_cmd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="OFF_SCREAM" />
-    <Button
-        android:id="@+id/reboot"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="reboot" />
+        android:text="ADB_OFF_SCREEN" />
 </LinearLayout>

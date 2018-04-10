@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="blackbird.com.screenapplication.AdbScreenActivity">
+
+    <Button
+        android:id="@+id/adb_off"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADB_OFF_SCREEN" />
+
+    <Button
+        android:id="@+id/adb_reboot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADB_REBOOT" />
+    <Button
+        android:id="@+id/adb_volume_"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADB_VOLUME+" />
+    <Button
+        android:id="@+id/adb_volume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADB_VOLUME-" />
+</LinearLayout>
