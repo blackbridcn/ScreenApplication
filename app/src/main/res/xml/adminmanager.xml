@@ -11,6 +11,8 @@
     <reset-password />
     <!-- 设置锁定屏幕密码的有效期 -->
     <expire-password />
+    <!--恢复出厂设置-->
+    <wipe-data />
     <!-- 设置存储设备加密 -->
     <encrypted-storage />
     <!-- 停用相机 -->

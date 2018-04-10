@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_gravity="center_vertical"
     tools:context="blackbird.com.screenapplication.MainActivity">
     <Button
         android:id="@+id/DevicePolicyManager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAllCaps="false"
-        android:text="DevicePolicyManager" />
+        android:text="DEVICEPOLICYMANAGER_SCREEN_OFF" />
     <Button
         android:id="@+id/adb_cmd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ADB_OFF_SCREEN" />
+        android:text="ADB_SCREEN_OFF" />
 </LinearLayout>

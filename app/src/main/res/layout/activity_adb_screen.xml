@@ -6,12 +6,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="blackbird.com.screenapplication.AdbScreenActivity">
-
+    <Button
+        android:id="@+id/adb_on"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADB_SCREEN_ON" />
     <Button
         android:id="@+id/adb_off"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ADB_OFF_SCREEN" />
+        android:text="ADB_SCREEN_OFF" />
 
     <Button
         android:id="@+id/adb_reboot"
@@ -28,4 +32,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ADB_VOLUME-" />
+
+
 </LinearLayout>

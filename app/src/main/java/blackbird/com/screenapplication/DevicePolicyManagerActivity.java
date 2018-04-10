@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -33,86 +32,28 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
         this.findViewById(R.id.btn_set_time).setOnClickListener(this);
         this.findViewById(R.id.btn_wipe_data).setOnClickListener(this);
         this.findViewById(R.id.btn_wisp_lock_time).setOnClickListener(this);
-        this.findViewById(R.id.btn_swipe_admin).setOnClickListener(this);
-        this.findViewById(R.id.btn_request).setOnClickListener(this);
+        this.findViewById(R.id.btn_request_lock).setOnClickListener(this);
         this.findViewById(R.id.btn_request_wipedata).setOnClickListener(this);
-
+        this.findViewById(R.id.btn_off_lock_admin).setOnClickListener(this);
+        this.findViewById(R.id.btn_off_swipe_admin).setOnClickListener(this);
+        this.findViewById(R.id.disable_camera).setOnClickListener(this);
+        this.findViewById(R.id.is_disablle_camera).setOnClickListener(this);
+        this.findViewById(R.id.off_disable_camera).setOnClickListener(this);
 
         adminReceiver = new ComponentName(this, AdminReciver.class);
         wipeDataAdminReceiver = new ComponentName(this, WipeDataAdminReciver.class);
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        // new DeviceAdminInfo();
-        //Lollipop DevicePolicyManager学习（上）
-        //https://blog.csdn.net/guiyu_1985/article/details/42778655
+
         getActiveAdmins();
-
-        //Android屏幕锁定详解（一）
-        //http://blog.51cto.com/mzh3344258/748998
-        //
-        // lockScreen();
     }
 
-    private void getActiveAdinsPerssion() {
-        boolean active = mDevicePolicyManager.isAdminActive(adminReceiver);
-        if (!active) {
-            //打开DevicePolicyManager管理器，授权页面
-            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiver);
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "DevicePolicyManager涉及的管理权限,一次性激活!");
-            startActivityForResult(intent, requestCode);
-        } else {
-            Toast.makeText(this, "已经获取的DevicePolicyManager管理器的授权", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void getWipeDataAdminPerssin() {
-        boolean active = mDevicePolicyManager.isAdminActive(wipeDataAdminReceiver);
-        if (!active) {
-            //打开DevicePolicyManager管理器，授权页面
-            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiver);
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "DevicePolicyManager 申请恢复出厂设置的管理权限!");
-
-            startActivityForResult(intent, requestCode);
-        } else {
-            Toast.makeText(this, "已经获取的DevicePolicyManager恢复出厂设置 管理器的授权", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private void isDeviceOwnerApp(String packageName) {
-        boolean deviceOwnerApp = mDevicePolicyManager.isDeviceOwnerApp(packageName);
-        Log.e("TAG", "isDeviceOwnerApp: "+ deviceOwnerApp);
-    }
-
-    private void getCameraDisabled() {
-        boolean cameraDisabled = mDevicePolicyManager.getCameraDisabled(adminReceiver);
-        Log.e("TAG", "getCameraDisabled: by  " + adminReceiver.getClassName() + cameraDisabled);
-    }
-
-    private void hasGrantedPolicy(ComponentName admin, int usesPolicy) {
-        mDevicePolicyManager.hasGrantedPolicy(admin, usesPolicy);//是否拥有某项设备管理权限
-       
-    }
-
-    private void getActiveAdmins() {
-        List<ComponentName> mComponentName = mDevicePolicyManager.getActiveAdmins();
-        Log.e("TAg", "getActiveAdmins :-------------- " + mComponentName);
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_lockscrrem:
-               // lockNow();
+                lockNow();
                 //"com.tencent.mm"
                 isDeviceOwnerApp("blackbird.com.screenapplication");
                 break;
@@ -132,18 +73,96 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
                 swipData();
                 break;
 
-            case R.id.btn_swipe_admin:
-                swipAdmid();
-                break;
-
-            case R.id.btn_request:
-                getActiveAdinsPerssion();
+            case R.id.btn_request_lock:
+                requestLockAdmins();
                 break;
 
             case R.id.btn_request_wipedata:
                 getWipeDataAdminPerssin();
                 break;
+            case R.id.btn_off_lock_admin:
+                removeLockAdmin();
+                break;
+
+            case R.id.btn_off_swipe_admin:
+                removeWipeAdmid();
+                break;
+            case R.id.disable_camera:
+                voidsetCameraDisable(true);
+                break;
+            case R.id.is_disablle_camera:
+                getCameraDisabled();
+                break;
+            case R.id.off_disable_camera:
+                voidsetCameraDisable(false);
+                break;
+
         }
+    }
+
+    private void requestLockAdmins() {
+        boolean active = mDevicePolicyManager.isAdminActive(adminReceiver);
+        if (!active) {
+            //打开DevicePolicyManager管理器，授权页面
+            Intent intent = new Intent();
+            //授权页面Action -->  DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN
+            intent.setAction(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            //设置DEVICE_ADMIN，告诉系统申请管理者权限的Component/DeviceAdminReceiver
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiver);
+            //设置 提示语--可不添加
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "DevicePolicyManager涉及的管理权限,一次性激活!");
+            startActivityForResult(intent, requestCode);
+        } else {
+            Toast.makeText(this, "已经获取的DevicePolicyManager管理器的授权", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void getWipeDataAdminPerssin() {
+        boolean active = mDevicePolicyManager.isAdminActive(wipeDataAdminReceiver);
+        if (!active) {
+            //打开DevicePolicyManager管理器，授权页面
+            Intent intent = new Intent();
+            //Action -->  DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN
+            intent.setAction(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            //设置DEVICE_ADMIN，告诉系统申请管理者权限的Component/DeviceAdminReceiver
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, wipeDataAdminReceiver);
+            //设置 提示语--可不添加
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "DevicePolicyManager 申请恢复出厂设置的管理权限!");
+            startActivityForResult(intent, requestCode);
+        } else {
+            Toast.makeText(this, "已经获取的DevicePolicyManager恢复出厂设置 管理器的授权", Toast.LENGTH_LONG).show();
+        }
+    }
+    /**
+     * 查看某个packageName是否已经授权
+     */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private void isDeviceOwnerApp(String packageName) {
+        boolean deviceOwnerApp = mDevicePolicyManager.isDeviceOwnerApp(packageName);
+        Log.e("TAG", "isDeviceOwnerApp: " + deviceOwnerApp);
+    }
+
+    private void getCameraDisabled() {
+        boolean cameraDisabled = mDevicePolicyManager.getCameraDisabled(adminReceiver);
+        if (cameraDisabled) {
+            Toast.makeText(this, "相机已经被禁用了", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "未禁用相机", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void hasGrantedPolicy(ComponentName admin, int usesPolicy) {
+        mDevicePolicyManager.hasGrantedPolicy(admin, usesPolicy);//是否拥有某项设备管理权限
+
+    }
+
+    private void getActiveAdmins() {
+        List<ComponentName> mComponentName = mDevicePolicyManager.getActiveAdmins();
+        Log.e("TAg", "getActiveAdmins :-------------- " + mComponentName);
+    }
+
+    private void voidsetCameraDisable(boolean disaleCamera) {
+        mDevicePolicyManager.setCameraDisabled(wipeDataAdminReceiver, disaleCamera);
     }
 
     private void setMaximumTimeToLock() {
@@ -174,6 +193,7 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
 
     private void resetPassword() {
         if (checkAdmin()) {
+            /**********************************************************************/
             mDevicePolicyManager.resetPassword("9527", 0);
             Toast.makeText(this, "若发生改变，则将触发DeviceAdminReceiver.onPasswordChanged", Toast.LENGTH_SHORT).show();
         } else {
@@ -183,7 +203,8 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
 
     private void swipPassword() {
         if (checkAdmin()) {
-            mDevicePolicyManager.resetPassword("", 0);
+            /*************************************************************************/
+            mDevicePolicyManager.resetPassword("123456", 0);
             Toast.makeText(this, "若发生改变，则将触发DeviceAdminReceiver.onPasswordChanged", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "未授权给用户系统管理权限", Toast.LENGTH_SHORT).show();
@@ -199,9 +220,9 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
         }
     }
 
-    private void swipAdmid() {
+    private void removeWipeAdmid() {
         if (mDevicePolicyManager.isAdminActive(wipeDataAdminReceiver)) {
-            mDevicePolicyManager.removeActiveAdmin(adminReceiver);
+            mDevicePolicyManager.removeActiveAdmin(wipeDataAdminReceiver);
             Toast.makeText(this, "收回设备管理器权限", Toast.LENGTH_SHORT).show();
         } else {
             //  getWipeDataAdminPerssin();
@@ -209,17 +230,18 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
         }
     }
 
-    private void lockScreen() {
-        if (!checkAdmin()) {
-            //打开DevicePolicyManager管理器，授权页面
-            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiver);
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "DevicePolicyManager管理权限,一次性激活!");
-            startActivityForResult(intent, requestCode);
-        } /*else {
+
+    private void removeLockAdmin() {
+        if (mDevicePolicyManager.isAdminActive(adminReceiver)) {
+            mDevicePolicyManager.removeActiveAdmin(adminReceiver);
+            Toast.makeText(this, "收回设备管理器权限", Toast.LENGTH_SHORT).show();
+        } else {
+            //  getWipeDataAdminPerssin();
             Toast.makeText(this, "未授权给用户系统管理权限", Toast.LENGTH_SHORT).show();
-        }*/
+        }
+
     }
+
 
     /**
      * 查看是否已经获得管理者的权限
@@ -234,7 +256,7 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (1 == requestCode) {
-            super.onActivityResult(requestCode, resultCode, data);
+             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 }

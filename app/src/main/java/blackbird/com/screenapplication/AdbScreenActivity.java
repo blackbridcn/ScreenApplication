@@ -1,15 +1,14 @@
 package blackbird.com.screenapplication;
 
 import android.app.Activity;
-import android.os.Build;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.os.PowerManager;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import blackbird.com.screenapplication.application.AppApplication;
 import blackbird.com.screenapplication.utils.AndroidRootUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,27 +24,23 @@ public class AdbScreenActivity extends Activity {
     Button adbVolume_;
     @BindView(R.id.adb_volume)
     Button adbVolume;
+    @BindView(R.id.adb_on)
+    Button adbOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
-            //window.setBackgroundDrawableResource(R.drawable.ic_launcher_background);
-
-        }
         setContentView(R.layout.activity_adb_screen);
         ButterKnife.bind(this);
-       // setContentView(getLayout());
-        setTitle(getResources().getString(R.string.app_name));
     }
 
-    @OnClick({R.id.adb_off, R.id.adb_reboot, R.id.adb_volume_, R.id.adb_volume})
+    @OnClick({R.id.adb_off, R.id.adb_reboot, R.id.adb_volume_, R.id.adb_volume, R.id.adb_on})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.adb_on:
+                openScreenOn();
+                break;
+
             case R.id.adb_off:
                 boolean root = AndroidRootUtils.checkDeviceRoot();
                 if (root) {
@@ -77,4 +72,25 @@ public class AdbScreenActivity extends Activity {
                 break;
         }
     }
+
+
+    private PowerManager powerManager;
+    private PowerManager.WakeLock wakeLock;
+
+    public void openScreenOn() {
+        if (powerManager == null) {
+            powerManager = (PowerManager) AppApplication.getApplicationContexts().getSystemService(Context.POWER_SERVICE);
+        }
+        if (wakeLock == null) {
+            wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "TAG");
+        }
+        boolean ifOpen = powerManager.isScreenOn();
+        if (!ifOpen) {
+            //屏幕会持续点亮
+            wakeLock.acquire();
+            //释放锁，以便2分钟后熄屏。
+            wakeLock.release();
+        }
+    }
+
 }
