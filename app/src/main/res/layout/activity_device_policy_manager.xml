@@ -74,10 +74,10 @@
         android:text="撤销force-lock等权限" />
 
     <Button
-        android:layout_marginTop="30dp"
         android:id="@+id/btn_request_wipedata"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:text="申请Wipe_data设备管理权限"
         android:textAllCaps="false" />
 
@@ -85,6 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/disable_camera"
             android:layout_width="0dp"
@@ -97,7 +98,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="相机是否禁用" />
+            android:text="打开相机" />
 
         <Button
             android:id="@+id/off_disable_camera"

@@ -1,11 +1,14 @@
 package blackbird.com.screenapplication;
 
 import android.app.Activity;
+import android.app.admin.DeviceAdminInfo;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Process;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +18,7 @@ import java.util.List;
 
 import blackbird.com.screenapplication.receiver.AdminReciver;
 import blackbird.com.screenapplication.receiver.WipeDataAdminReciver;
+import blackbird.com.screenapplication.utils.ProcessUtils;
 
 public class DevicePolicyManagerActivity extends Activity implements View.OnClickListener {
 
@@ -22,6 +26,7 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
     private ComponentName adminReceiver, wipeDataAdminReceiver;
     private int requestCode = 1;
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +49,11 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
         wipeDataAdminReceiver = new ComponentName(this, WipeDataAdminReciver.class);
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
 
+        String curProcessName = ProcessUtils.getCurProcessName(this);
+        Log.e("TAG", "DevicePolicyManagerActivity:---------------- curProcessName : " + curProcessName);
+
+        int uid = Process.myUid();
+        Log.e("TAG", ": --------------------------- DevicePolicyManagerActivity UID :"+uid );
         getActiveAdmins();
     }
 
@@ -100,6 +110,7 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     private void requestLockAdmins() {
         boolean active = mDevicePolicyManager.isAdminActive(adminReceiver);
         if (!active) {
@@ -117,6 +128,7 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     private void getWipeDataAdminPerssin() {
         boolean active = mDevicePolicyManager.isAdminActive(wipeDataAdminReceiver);
         if (!active) {
@@ -133,6 +145,7 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
             Toast.makeText(this, "已经获取的DevicePolicyManager恢复出厂设置 管理器的授权", Toast.LENGTH_LONG).show();
         }
     }
+
     /**
      * 查看某个packageName是否已经授权
      */
@@ -142,12 +155,52 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
         Log.e("TAG", "isDeviceOwnerApp: " + deviceOwnerApp);
     }
 
+    int REQUEST_CAMERA_1 = 1;
+
+    /**
+     * \
+     * 打开相机
+     */
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     private void getCameraDisabled() {
-        boolean cameraDisabled = mDevicePolicyManager.getCameraDisabled(adminReceiver);
+        /*boolean cameraDisabled = mDevicePolicyManager.getCameraDisabled(adminReceiver);
         if (cameraDisabled) {
             Toast.makeText(this, "相机已经被禁用了", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "未禁用相机", Toast.LENGTH_LONG).show();
+        }*/
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);// 启动系统相机
+        startActivityForResult(intent, REQUEST_CAMERA_1);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (1 == requestCode) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+        if (resultCode == RESULT_OK) { // 如果返回数据
+            if (requestCode == REQUEST_CAMERA_1) { // 判断请求码是否为REQUEST_CAMERA,如果是代表是这个页面传过去的，需要进行获取
+                // Bundle bundle = data.getExtras(); // 从data中取出传递回来缩略图的信息，图片质量差，适合传递小图片
+                // Bitmap bitmap = (Bitmap) bundle.get("data"); // 将data中的信息流解析为Bitmap类型
+                // ivShowPicture.setImageBitmap(bitmap);// 显示图片
+            } /*else if (requestCode == REQUEST_CAMERA_2) {
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(mFilePath); // 根据路径获取数据
+                    Bitmap bitmap = BitmapFactory.decodeStream(fis);
+                    ivShowPicture.setImageBitmap(bitmap);// 显示图片
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        fis.close();// 关闭流
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }*/
         }
     }
 
@@ -194,7 +247,7 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
     private void resetPassword() {
         if (checkAdmin()) {
             /**********************************************************************/
-            mDevicePolicyManager.resetPassword("9527", 0);
+            mDevicePolicyManager.resetPassword("9527", DeviceAdminInfo.USES_POLICY_RESET_PASSWORD);
             Toast.makeText(this, "若发生改变，则将触发DeviceAdminReceiver.onPasswordChanged", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "未授权给用户系统管理权限", Toast.LENGTH_SHORT).show();
@@ -204,7 +257,7 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
     private void swipPassword() {
         if (checkAdmin()) {
             /*************************************************************************/
-            mDevicePolicyManager.resetPassword("123456", 0);
+            mDevicePolicyManager.resetPassword("123456", DeviceAdminInfo.USES_POLICY_RESET_PASSWORD);
             Toast.makeText(this, "若发生改变，则将触发DeviceAdminReceiver.onPasswordChanged", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "未授权给用户系统管理权限", Toast.LENGTH_SHORT).show();
@@ -252,11 +305,4 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
         return mDevicePolicyManager.isAdminActive(adminReceiver);
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (1 == requestCode) {
-             super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
 }

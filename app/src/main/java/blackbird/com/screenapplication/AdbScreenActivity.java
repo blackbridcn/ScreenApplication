@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.Process;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import blackbird.com.screenapplication.application.AppApplication;
 import blackbird.com.screenapplication.utils.AndroidRootUtils;
+import blackbird.com.screenapplication.utils.ProcessUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,6 +35,11 @@ public class AdbScreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adb_screen);
         ButterKnife.bind(this);
+
+        String curProcessName = ProcessUtils.getCurProcessName(this);
+        Log.e("TAG", "AdbScreenActivity:---------------- curProcessName : " + curProcessName);
+        int uid = Process.myUid();
+        Log.e("TAG", ": --------------------------- AdbScreenActivity UID :" + uid);
     }
 
     @OnClick({R.id.adb_off, R.id.adb_reboot, R.id.adb_volume_, R.id.adb_volume, R.id.adb_on})
