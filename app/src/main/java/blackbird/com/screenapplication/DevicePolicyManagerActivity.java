@@ -15,10 +15,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.List;
-
 import blackbird.com.screenapplication.receiver.AdminReciver;
 import blackbird.com.screenapplication.receiver.WipeDataAdminReciver;
-import blackbird.com.screenapplication.utils.ProcessUtils;
 
 public class DevicePolicyManagerActivity extends Activity implements View.OnClickListener {
 
@@ -49,11 +47,7 @@ public class DevicePolicyManagerActivity extends Activity implements View.OnClic
         wipeDataAdminReceiver = new ComponentName(this, WipeDataAdminReciver.class);
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
 
-        String curProcessName = ProcessUtils.getCurProcessName(this);
-        Log.e("TAG", "DevicePolicyManagerActivity:---------------- curProcessName : " + curProcessName);
 
-        int uid = Process.myUid();
-        Log.e("TAG", ": --------------------------- DevicePolicyManagerActivity UID :"+uid );
         getActiveAdmins();
     }
 

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ScreenApplication</string>
+    <string name="title_activity_lock_screen">LockScreenActivity</string>
 </resources>

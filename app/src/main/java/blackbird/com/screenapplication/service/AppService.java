@@ -61,6 +61,8 @@ public class AppService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // 在此重新启动,使服务常驻内存
+        startService(new Intent(this, AppService.class));
     }
 
     private void RegisterScreenReciver() {

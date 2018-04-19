@@ -5,6 +5,7 @@
     <!-- android:sharedUserId="android.uid.system" -->
     <!-- 电源管理权限 -->
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DEVICE_POWER" />
     <uses-permission android:name="android.permission.REBOOT" />
@@ -42,7 +43,7 @@
             </intent-filter>
         </receiver>
 
-        <!--设备管理器权限 恢复出厂设置权限-->
+        <!-- 设备管理器权限 恢复出厂设置权限 -->
         <receiver
             android:name=".receiver.WipeDataAdminReciver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -68,11 +69,14 @@
             android:name=".DevicePolicyManagerActivity"
             android:process=":remote"
             android:theme="@android:style/Theme.Wallpaper.NoTitleBar" />
-
         <activity
             android:name=".AdbScreenActivity"
             android:process="com.screen.remote"
             android:theme="@android:style/Theme.Wallpaper.NoTitleBar" />
+        <activity
+            android:name=".LockScreenActivity"
+            android:label="@string/title_activity_lock_screen"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
