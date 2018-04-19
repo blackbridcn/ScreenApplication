@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
@@ -21,14 +22,22 @@ import blackbird.com.screenapplication.R;
 import blackbird.com.screenapplication.receiver.ScreenReciver;
 
 public class AppService extends Service {
+    private IBinder serviceBinder = new ServiceBind();
+
     public AppService() {
+    }
+
+    public class ServiceBind extends Binder {
+        public AppService getService() {
+            return AppService.this;
+        }
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return serviceBinder;
     }
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onCreate() {
@@ -42,6 +51,11 @@ public class AppService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
 
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return super.onUnbind(intent);
     }
 
     @Override
